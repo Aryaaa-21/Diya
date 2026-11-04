@@ -1,0 +1,548 @@
+@import "tailwindcss";
+
+@theme {
+  --color-night: #050204;
+  --color-night-2: #0a0306;
+  --color-maroon-deep: #18060c;
+  --color-maroon: #2a0812;
+  --color-red-deep: #4a0d18;
+  --color-burgundy: #651526;
+  --color-gold: #d99a2b;
+  --color-gold-warm: #f5b942;
+  --color-gold-bright: #ffd76a;
+  --color-flame-orange: #ff8a1f;
+  --color-flame-yellow: #ffd45a;
+  --color-flame-white: #fff4b0;
+  --color-ink: #fff4de;
+  --color-ink-2: #c9b89a;
+  --color-ink-muted: #796d5e;
+
+  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-ui: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-script: "Great Vibes", "Cormorant Garamond", cursive;
+
+  /* Modular scale, ratio 1.25 (major third) from a 16px base. */
+  --text-step--1: 0.8rem;
+  --text-step-0: 1rem;
+  --text-step-1: 1.25rem;
+  --text-step-2: 1.5625rem;
+  --text-step-3: 1.953rem;
+  --text-step-4: 2.441rem;
+  --text-step-5: 3.052rem;
+
+  --ease-cinema: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --spark-gold: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 Q13.1 10.9 24 12 Q13.1 13.1 12 24 Q10.9 13.1 0 12 Q10.9 10.9 12 0 Z' fill='%23ffd76a'/%3E%3C/svg%3E");
+  --spark-warm: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 Q13.1 10.9 24 12 Q13.1 13.1 12 24 Q10.9 13.1 0 12 Q10.9 10.9 12 0 Z' fill='%23f5b942'/%3E%3C/svg%3E");
+  --spark-cream: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 Q13.1 10.9 24 12 Q13.1 13.1 12 24 Q10.9 13.1 0 12 Q10.9 10.9 12 0 Z' fill='%23fff4de'/%3E%3C/svg%3E");
+  --halo-gold: radial-gradient(closest-side, rgba(255, 215, 106, 0.34), rgba(255, 138, 31, 0.1) 55%, transparent 72%);
+  --halo-warm: radial-gradient(closest-side, rgba(245, 185, 66, 0.32), rgba(255, 138, 31, 0.1) 55%, transparent 72%);
+  --halo-cream: radial-gradient(closest-side, rgba(255, 244, 222, 0.34), rgba(255, 212, 90, 0.1) 55%, transparent 72%);
+}
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+    background: var(--color-night);
+    color: var(--color-ink);
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--color-red-deep); color: var(--color-ink); }
+  :focus-visible {
+    outline: 1px solid var(--color-gold-warm);
+    outline-offset: 4px;
+  }
+}
+
+@layer components {
+  /* Hairline-gold control: the light fills it from the centre on hover/focus. */
+  .ember-button {
+    position: relative;
+    font-family: var(--font-ui);
+    font-size: var(--text-step--1);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-2);
+    padding: 0.9rem 1.6rem;
+    background: transparent;
+    border: 1px solid color-mix(in oklab, var(--color-gold) 45%, transparent);
+    border-radius: 999px;
+    transition: color 400ms var(--ease-cinema), border-color 400ms var(--ease-cinema),
+      box-shadow 600ms var(--ease-cinema);
+    cursor: pointer;
+  }
+  .ember-button:hover,
+  .ember-button:focus-visible {
+    color: var(--color-ink);
+    border-color: var(--color-gold-warm);
+    box-shadow: 0 0 24px -6px color-mix(in oklab, var(--color-flame-orange) 55%, transparent),
+      inset 0 0 18px -10px var(--color-gold-warm);
+  }
+  .ember-button:focus-visible { outline-offset: 6px; }
+  .ember-button:disabled { opacity: 0.4; cursor: default; }
+
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.18;
+    letter-spacing: 0.005em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ---------- 2D fallback + loader flame ---------- */
+.mark-flame {
+  transform-origin: 24px 26px;
+  animation: mark-flicker 2.6s ease-in-out infinite;
+}
+@keyframes mark-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); opacity: 1; }
+  30% { transform: scale(0.96, 1.05) rotate(-1.5deg); opacity: 0.92; }
+  55% { transform: scale(1.03, 0.97) rotate(1deg); }
+  80% { transform: scale(0.98, 1.03) rotate(-0.5deg); opacity: 0.96; }
+}
+.fallback-pool {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(40rem 26rem at 50% 42%, #2a0812 0%, #0a0306 55%, #050204 100%);
+}
+
+/* ---------- Experience chrome ---------- */
+.vignette {
+  background: radial-gradient(120% 90% at 50% 55%, transparent 45%, rgba(5, 2, 4, 0.55) 80%, rgba(5, 2, 4, 0.9) 100%);
+}
+
+.chrome-fade {
+  transition: opacity 900ms var(--ease-cinema), visibility 0s linear 0s;
+}
+.chrome-fade[data-hidden='true'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 900ms var(--ease-cinema), visibility 0s linear 900ms;
+}
+
+.intro-brand,
+.intro-cta {
+  transition: opacity 1600ms var(--ease-cinema), transform 1600ms var(--ease-cinema),
+    visibility 0s linear 0s;
+}
+/*
+ * Taken out of hit testing once it has faded, not merely made transparent. A
+ * disabled button still swallows pointer events, so the "Light the diya" call
+ * to action went on eating taps in a band across the middle of the canvas long
+ * after the diya was lit — including the taps that light fireworks.
+ */
+.intro-brand[data-open='false'],
+.intro-cta[data-open='false'] {
+  opacity: 0;
+  transform: translateY(8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 1600ms var(--ease-cinema), transform 1600ms var(--ease-cinema),
+    visibility 0s linear 1600ms;
+}
+.intro-cta[data-open='true'] { transition-delay: 300ms; }
+
+/* The CTA breathes with the ember, very slowly. */
+.ember-button--breathe { animation: breathe 4.2s ease-in-out infinite; }
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; border-color: color-mix(in oklab, var(--color-gold) 40%, transparent); }
+  50% { box-shadow: 0 0 28px -10px color-mix(in oklab, var(--color-flame-orange) 50%, transparent); border-color: color-mix(in oklab, var(--color-gold-warm) 70%, transparent); }
+}
+.ember-button--breathe:hover, .ember-button--breathe:focus-visible { animation: none; }
+.ember-button--small { padding: 0.65rem 1.1rem; font-size: 0.66rem; }
+
+.text-link {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+  padding: 0.5rem 0;
+  background: linear-gradient(var(--color-gold), var(--color-gold)) left bottom / 0% 1px no-repeat;
+  transition: background-size 600ms var(--ease-cinema), color 400ms;
+  cursor: pointer;
+}
+.text-link:hover, .text-link:focus-visible { background-size: 100% 1px; color: var(--color-ink); }
+
+/* Navigation: index, a gold hairline that extends when active, label. */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--color-ink-2) 72%, transparent);
+  cursor: pointer;
+  transition: color 500ms var(--ease-cinema);
+}
+.nav-index { font-size: 0.56rem; opacity: 0.6; }
+.nav-line {
+  display: block;
+  width: 0.75rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 600ms var(--ease-cinema), background 500ms;
+}
+.nav-item:hover, .nav-item:focus-visible { color: var(--color-ink); }
+.nav-item:hover .nav-line, .nav-item:focus-visible .nav-line { width: 1.4rem; }
+.nav-item[aria-current='true'] { color: var(--color-gold-bright); }
+.nav-item[aria-current='true'] .nav-line { width: 2rem; background: var(--color-gold-warm); box-shadow: 0 0 8px var(--color-flame-orange); }
+@media (max-width: 767px) {
+  .nav-item { flex-direction: column; gap: 0.35rem; padding: 0.6rem 0.5rem; letter-spacing: 0.16em; }
+  .nav-index { display: none; }
+  .nav-line { order: 2; }
+}
+/*
+ * Five labels on a phone. The type tightens so nothing is cut off, but the
+ * padding stays generous enough that even the shortest label ("Sky") keeps a
+ * 44px touch target.
+ */
+@media (max-width: 420px) {
+  .nav-item { padding: 0.68rem 0.7rem; font-size: 0.6rem; letter-spacing: 0.1em; }
+}
+
+/* The credits card: a slow wash in, the contents lifting a touch behind it. */
+.about-card {
+  transition: opacity 600ms var(--ease-cinema), visibility 0s linear 0s;
+}
+.about-card[data-open='false'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 500ms var(--ease-cinema), visibility 0s linear 500ms;
+}
+.about-card > div {
+  transition: transform 700ms var(--ease-cinema), opacity 700ms var(--ease-cinema);
+}
+.about-card[data-open='false'] > div {
+  transform: translateY(14px);
+  opacity: 0;
+}
+.hairline {
+  width: 4.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-warm), transparent);
+}
+
+/* Mode panels and greetings fade and rise into place. */
+.mode-panel {
+  transition: opacity 900ms var(--ease-cinema), transform 900ms var(--ease-cinema), visibility 0s linear 0s;
+}
+.mode-panel[data-open='false'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-cinema), transform 600ms var(--ease-cinema), visibility 0s linear 600ms;
+}
+.mode-panel[data-open='true'] { transition-delay: 900ms; }
+@media (max-width: 767px) {
+  .mode-panel[data-open='false'] { transform: translateY(10px); }
+  /* A soft dark wash behind controls on small screens keeps them readable. */
+  .mode-panel::before {
+    content: '';
+    position: absolute;
+    inset: -3rem 0 -6rem;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(5, 2, 4, 0.92) 40%, transparent);
+  }
+}
+
+.segment {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.95rem;
+  color: var(--color-ink-muted);
+  border: 1px solid color-mix(in oklab, var(--color-gold) 22%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 400ms, border-color 400ms, box-shadow 500ms;
+}
+.segment:hover { color: var(--color-ink-2); border-color: color-mix(in oklab, var(--color-gold) 50%, transparent); }
+.segment[data-checked='true'] {
+  color: var(--color-ink);
+  border-color: var(--color-gold-warm);
+  box-shadow: inset 0 0 14px -8px var(--color-gold-warm);
+}
+.segment:has(:focus-visible), .swatch:has(:focus-visible) { outline: 1px solid var(--color-gold-warm); outline-offset: 3px; }
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.7rem 0.45rem 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: border-color 400ms, color 400ms;
+}
+.swatch-dot { width: 0.85rem; height: 0.85rem; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255, 244, 222, 0.15); }
+.swatch[data-checked='true'] { border-color: var(--color-gold-warm); color: var(--color-ink); }
+
+/* Celebrate's controls recede while the sky is busy, and return on any input. */
+.celebrate-shell[data-idle='true'] .mode-panel[data-open='true'] {
+  opacity: 0.18;
+  transition-delay: 0s;
+}
+.celebrate-shell[data-idle='true']:hover .mode-panel[data-open='true'],
+.celebrate-shell[data-idle='true']:focus-within .mode-panel[data-open='true'] {
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+/* A hairline track with a single gold ember for a handle. */
+.ember-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-width: 5rem;
+  height: 1.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+.ember-range::-webkit-slider-runnable-track {
+  height: 1px;
+  background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+}
+.ember-range::-moz-range-track {
+  height: 1px;
+  background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+}
+.ember-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-top: -0.33rem;
+  border-radius: 999px;
+  background: var(--color-gold-warm);
+  box-shadow: 0 0 10px -2px var(--color-flame-orange);
+  transition: box-shadow 300ms, transform 300ms;
+}
+.ember-range::-moz-range-thumb {
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-gold-warm);
+  box-shadow: 0 0 10px -2px var(--color-flame-orange);
+}
+.ember-range:hover::-webkit-slider-thumb,
+.ember-range:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.25);
+  box-shadow: 0 0 16px -2px var(--color-flame-orange);
+}
+.ember-range:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.ember-range:focus-visible {
+  outline: 1px solid var(--color-gold-warm);
+  outline-offset: 6px;
+}
+
+.ember-field {
+  width: 100%;
+  background: rgba(10, 3, 6, 0.35);
+  border: 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--color-gold) 35%, transparent);
+  padding: 0.6rem 0.1rem;
+  font-family: var(--font-display);
+  font-size: var(--text-step-1);
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 400ms, box-shadow 500ms;
+}
+.ember-field::placeholder { color: var(--color-ink-muted); font-style: italic; opacity: 0.8; }
+.ember-field:focus { border-color: var(--color-gold-warm); box-shadow: 0 10px 18px -16px var(--color-flame-orange); }
+.ember-field:focus-visible { outline: none; }
+
+.greeting .line {
+  display: block;
+  opacity: 0;
+  animation: line-in 1800ms var(--ease-cinema) forwards;
+}
+@keyframes line-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.greeting h2, .greeting p { text-shadow: 0 0 30px rgba(5, 2, 4, 0.9); }
+
+.sound-bar { transform-origin: bottom; transform: scaleY(0.25); transition: transform 600ms var(--ease-cinema); }
+.sound-bar.is-on { animation: sound 1.4s ease-in-out infinite; }
+@keyframes sound { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+
+/* Custom cursor, desktop only (added by Cursor.tsx). */
+.has-cursor, .has-cursor * { cursor: none !important; }
+.cursor-ring, .cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  pointer-events: none;
+  border-radius: 999px;
+}
+.cursor-ring {
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 1px solid color-mix(in oklab, var(--color-gold-warm) 70%, transparent);
+  /*
+   * Only the hover pop is eased. A transition on the whole `transform` eased
+   * the ring's position too, stacking a quarter second on top of the follow in
+   * the render loop — together they were the lag.
+   */
+  transition: scale 250ms var(--ease-cinema), border-color 400ms, box-shadow 400ms;
+  will-change: translate, scale;
+}
+/* Celebrate: the ring reads as armed — warmer, with a lit core. */
+.is-celebrating .cursor-ring {
+  border-color: var(--color-gold-bright);
+  box-shadow: 0 0 14px -3px var(--color-flame-orange),
+    inset 0 0 0 3px color-mix(in oklab, var(--color-flame-yellow) 45%, transparent);
+}
+
+/*
+ * The wake of sparks. Pool elements rest at zero opacity until the Web
+ * Animations API gives them a life. Star and glow are two background layers of
+ * one element, so a spark's whole life stays on the compositor — no mask, no
+ * filter, both of which force a re-raster on every frame of a scale animation.
+ */
+.cursor-sparks {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cursor-spark,
+.cursor-ember {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.cursor-spark {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%, 100%;
+}
+.cursor-spark[data-tone='0'] { background-image: var(--spark-gold), var(--halo-gold); }
+.cursor-spark[data-tone='1'] { background-image: var(--spark-warm), var(--halo-warm); }
+.cursor-spark[data-tone='2'] { background-image: var(--spark-cream), var(--halo-cream); }
+.cursor-ember {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, var(--color-gold-bright), color-mix(in oklab, var(--color-flame-orange) 55%, transparent) 55%, transparent 72%);
+}
+
+.cursor-glow {
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  background: radial-gradient(closest-side, rgba(255, 170, 70, 0.26), rgba(255, 138, 31, 0.08) 55%, transparent);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ---------- The handwritten wish ---------- */
+.handwriting {
+  --fit: 1;
+  position: relative;
+  display: inline-block;
+  opacity: 0;
+  /* Measured in Handwriting.tsx: keeps the one unbroken line on screen. */
+  transform: scale(var(--fit));
+  transform-origin: center top;
+  transition: opacity 1100ms var(--ease-cinema);
+}
+.handwriting[data-open='true'] { opacity: 1; }
+
+.handwriting-line {
+  --write: -7%;
+  margin: 0;
+  font-family: var(--font-script);
+  font-weight: 400;
+  font-size: clamp(1.55rem, 6.2vw, 4rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--color-gold-bright);
+  text-shadow: 0 0 20px rgba(255, 138, 31, 0.4), 0 0 54px rgba(255, 138, 31, 0.16);
+  transition: text-shadow 1400ms var(--ease-cinema);
+  /* The soft edge that travels along the line as it is written. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 calc(var(--write) - 7%),
+    rgba(0, 0, 0, 0.45) var(--write),
+    transparent calc(var(--write) + 3%)
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 calc(var(--write) - 7%),
+    rgba(0, 0, 0, 0.45) var(--write),
+    transparent calc(var(--write) + 3%)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.handwriting-line.is-written {
+  text-shadow: 0 0 24px rgba(255, 205, 120, 0.46), 0 0 68px rgba(255, 138, 31, 0.22);
+}
+
+/* The ember riding the nib. */
+.handwriting-nib {
+  position: absolute;
+  left: 0;
+  top: 58%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(255, 250, 222, 0.95), rgba(255, 170, 60, 0.5) 45%, transparent 72%);
+  box-shadow: 0 0 20px 5px rgba(255, 138, 31, 0.4);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* The same hand, used as a sign-off. */
+.script-line {
+  font-family: var(--font-script);
+  font-size: var(--text-step-3);
+  line-height: 1.4;
+  text-shadow: 0 0 22px rgba(255, 138, 31, 0.32);
+}
